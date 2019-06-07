@@ -243,7 +243,7 @@ def on_new_sample(sink, pipeline, render_overlay, layout, images, get_command):
         svg = render_overlay()
         overlay = pipeline.get_by_name('overlay')
         if overlay:
-            overlay.set_svg(svg, layout.render_size)
+            overlay.set_svg(svg)
 
         if save_frame:
             images.put((del_files, cmd, data, layout.inference_size, svg))
