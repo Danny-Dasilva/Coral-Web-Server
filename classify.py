@@ -105,7 +105,7 @@ def render_gen(args):
     # engines = itertools.cycle(engines)
     # engine = next(engines)
 
-    labels = utils.load_labels("labels")
+    #labels = utils.load_labels("labels")
     draw_overlay = True
     
 
