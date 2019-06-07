@@ -156,8 +156,6 @@ def render_gen(args):
 def add_render_gen_args(parser):
     parser.add_argument('--model', required=True,
                         help='.tflite model path')
-    parser.add_argument('--labels', required=True,
-                        help='label file path')
     parser.add_argument('--window', type=int, default=10,
                         help='number of frames to accumulate inference results')
     parser.add_argument('--top_k', type=int, default=1,
