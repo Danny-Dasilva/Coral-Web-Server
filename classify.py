@@ -95,8 +95,8 @@ def print_results(inference_rate, results):
         
 
 def render_gen(args):
-    acc = accumulator(size=args.window, top_k=args.top_k)
-    acc.send(None)  # Initialize.
+    #acc = accumulator(size=args.window, top_k=args.top_k)
+    #acc.send(None)  # Initialize.
 
     fps_counter = utils.avg_fps_counter(30)
 
