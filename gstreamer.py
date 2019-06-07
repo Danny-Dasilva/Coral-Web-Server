@@ -151,9 +151,9 @@ def save_frame(del_files, cmd, rgb, size, overlay=None, ext='png'):
 Layout = collections.namedtuple('Layout', ('size', 'window', 'render_size'))
 
 def make_layout( render_size):
-    
+    layout = (300, 300)
     render_size = Size(*render_size)
-    size = min_outer_size( render_size)
+    size = min_outer_size(layout, render_size)
     window = center_inside(render_size, size)
     return Layout(size=size, window=window, render_size=render_size)
 
