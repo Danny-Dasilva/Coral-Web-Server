@@ -32,7 +32,7 @@ def run_server(add_render_gen_args, render_gen):
 
     with StreamingServer(camera, args.bitrate) as server:
         def render_overlay(layout, command):
-            overlay = gen.send((layout, command))
+            overlay = EMPTY_SVG
             server.send_overlay(overlay if overlay else EMPTY_SVG)
 
         camera.render_overlay = render_overlay
