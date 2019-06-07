@@ -36,7 +36,7 @@ def inference_pipeline(layout, stillimage=False):
         Caps('video/x-raw', format='RGBA', width=size.width, height=size.height),
         Filter('videoconvert'),
         Caps('video/x-raw', format='RGB', width=size.width, height=size.height),
-        Filter('videobox', autocrop=True),,
+        Filter('videobox', autocrop=True),
         Sink('app', name='appsink', emit_signals=True, max_buffers=1, drop=True, sync=False),
     ]
 
