@@ -113,7 +113,7 @@ def render_gen(args):
 
     output = None
     while True:
-        tensor, layout, command = (yield output)
+        layout, command = (yield output)
         
         inference_rate = next(fps_counter)
         if draw_overlay:
@@ -133,7 +133,7 @@ def render_gen(args):
             
             if args.print:
                 print_results(inference_rate, results)
-            print(layout)
+            print(results)
             title = titles[engine]
             output = overlay(title, results, inference_time, inference_rate, layout)
 
