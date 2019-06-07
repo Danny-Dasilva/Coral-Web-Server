@@ -129,7 +129,7 @@ def render_gen(args):
             b = score * 100
             a = results
             
-            results = acc.send(results)
+            results = "string"
             
             if args.print:
                 print_results(inference_rate, results)
