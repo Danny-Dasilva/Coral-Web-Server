@@ -240,7 +240,7 @@ def on_new_sample(sink, pipeline, layout, images, get_command):
         else:
             custom_command = command
 
-        svg = str(svg.Svg())
+        svg = "some string"
         overlay = pipeline.get_by_name('overlay')
         if overlay:
             overlay.set_svg(svg)
