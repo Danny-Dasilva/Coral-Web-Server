@@ -154,16 +154,11 @@ def render_gen(args):
             engine = next(engines)
 
 def add_render_gen_args(parser):
-    parser.add_argument('--model', required=True,
-                        help='.tflite model path')
-    parser.add_argument('--labels', required=True,
-                        help='label file path')
+    
     parser.add_argument('--window', type=int, default=10,
                         help='number of frames to accumulate inference results')
-    parser.add_argument('--top_k', type=int, default=1,
-                        help='number of classes with highest score to display')
-    parser.add_argument('--threshold', type=float, default=0.1,
-                        help='class score threshold')
+    
+    
     parser.add_argument('--print', default=False, action='store_true',
                         help='Print inference results')
 
