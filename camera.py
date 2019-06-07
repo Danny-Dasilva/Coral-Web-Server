@@ -14,7 +14,7 @@ class Camera:
 
     @property
     def resolution(self):
-        return self._layout.render_size
+        return('640x480')
 
     def request_key_frame(self):
         pass
