@@ -273,15 +273,15 @@ def run(inference_size, *, source, downscale, loop, display):
 def get_pipeline(source, inference_size, downscale, display):
     fmt = parse_format(source)
     if fmt:
-        layout = make_layout(inference_size, fmt.size)
-        return layout, camera_pipeline(fmt, layout, display)
+        # layout = make_layout(inference_size, fmt.size)
+        return camera_pipeline(fmt, display)
 
     filename = os.path.expanduser(source)
     if os.path.isfile(filename):
         info = get_video_info(filename)
         render_size = Size(info.get_width(), info.get_height()) / downscale
-        layout = make_layout(inference_size, render_size)
-        return layout, file_pipline(info.is_image(), filename, layout, display)
+        # layout = make_layout(inference_size, render_size)
+        return file_pipline(info.is_image(), filename, display)
 
     return None
 
@@ -291,7 +291,7 @@ def camera_pipeline(fmt, layout, display):
     else:
         return camera_display_pipeline(fmt, layout)
 
-def file_pipline(is_image, filename, layout, display):
+def file_pipline(is_image, filename, display):
     if display is Display.NONE:
         if is_image:
             return image_headless_pipeline(filename, layout)
@@ -307,7 +307,7 @@ def file_pipline(is_image, filename, layout, display):
 def quit():
     Gtk.main_quit()
 
-def run_pipeline(pipeline, layout, loop, display, handle_sigint=True, signals=None):
+def run_pipeline(pipeline, loop, display, handle_sigint=True, signals=None):
     # Create pipeline
     pipeline = describe(pipeline)
     print(pipeline)

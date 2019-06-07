@@ -12,7 +12,7 @@ import itertools
 import time
 import logging
 
-from edgetpu.classification.engine import ClassificationEngine
+#from edgetpu.classification.engine import ClassificationEngine
 
 import svg
 import utils
