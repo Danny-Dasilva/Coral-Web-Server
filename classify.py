@@ -100,12 +100,12 @@ def render_gen(args):
 
     fps_counter = utils.avg_fps_counter(30)
 
-    engines, titles = utils.make_engines(args.model, ClassificationEngine)
-    assert utils.same_input_image_sizes(engines)
-    engines = itertools.cycle(engines)
-    engine = next(engines)
+    # engines, titles = utils.make_engines(args.model, ClassificationEngine)
+    # assert utils.same_input_image_sizes(engines)
+    # engines = itertools.cycle(engines)
+    # engine = next(engines)
 
-    labels = utils.load_labels(args.labels)
+    labels = utils.load_labels("labels")
     draw_overlay = True
     
 
