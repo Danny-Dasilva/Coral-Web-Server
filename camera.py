@@ -37,9 +37,9 @@ class Camera:
                                               False, signals))
         self._thread.start()
 
-    def stop_recording(self):
-        gstreamer.quit()
-        self._thread.join()
+    # def stop_recording(self):
+    #     gstreamer.quit()
+    #     self._thread.join()
 
     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
         raise NotImplemented
