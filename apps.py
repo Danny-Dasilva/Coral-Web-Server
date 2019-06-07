@@ -27,7 +27,7 @@ def run_server(add_render_gen_args, render_gen):
 
     gen = render_gen(args)
     
-    camera = make_camera(args.source, next(gen), args.loop)
+    camera = make_camera(args.source, args.loop)
     assert camera is not None
 
     with StreamingServer(camera, args.bitrate) as server:
