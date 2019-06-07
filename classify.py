@@ -118,7 +118,7 @@ def render_gen(args):
         inference_rate = next(fps_counter)
         if draw_overlay:
             start = time.monotonic()
-            results = engine.ClassifyWithInputTensor(tensor, threshold=args.threshold, top_k=args.top_k)
+            #results = engine.ClassifyWithInputTensor(tensor, threshold=args.threshold, top_k=args.top_k)
             
             inference_time = time.monotonic() - start
             
@@ -129,8 +129,8 @@ def render_gen(args):
             b = score * 100
             a = results
             
-            results = acc.send(results)
-            
+            #results = acc.send(results)
+            results = "string"
             if args.print:
                 print_results(inference_rate, results)
             print(results)
