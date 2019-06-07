@@ -26,37 +26,16 @@ def run_server(add_render_gen_args, render_gen):
     args = parser.parse_args()
 
     gen = render_gen(args)
-    print('gen', gen)
+    
     camera = make_camera(args.source, next(gen), args.loop)
-    print('next gem', next(gen))
     assert camera is not None
 
     with StreamingServer(camera, args.bitrate) as server:
         def render_overlay(tensor, layout, command):
-            overlay = gen.send((tensor, layout, command))
-            server.send_overlay(overlay if overlay else EMPTY_SVG)
+            #overlay = gen.send((tensor, layout, command))
+            server.send_overlay(EMPTY_SVG)
+            #server.send_overlay(overlay if overlay else EMPTY_SVG)
 
         camera.render_overlay = render_overlay
         signal.pause()
 
-
-def run_app(add_render_gen_args, render_gen):
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--source',
-                        help='/dev/videoN:FMT:WxH:N/D or .mp4 file or image file',
-                        default='/dev/video0:YUY2:1280x720:30/1')
-    parser.add_argument('--downscale', type=float, default=2.0,
-                        help='Downscale factor for .mp4 file rendering')
-    parser.add_argument('--loop',  default=False, action='store_true',
-                        help='Loop input video file')
-    parser.add_argument('--displaymode', type=Display, choices=Display, default=Display.FULLSCREEN,
-                        help='Display mode')
-    add_render_gen_args(parser)
-    args = parser.parse_args()
-
-    if not run_gen(render_gen(args),
-                   source=args.source,
-                   downscale=args.downscale,
-                   loop=args.loop,
-                   display=args.displaymode):
-        print('Invalid source argument:', args.source)
