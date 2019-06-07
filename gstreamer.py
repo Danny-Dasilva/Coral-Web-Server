@@ -148,14 +148,17 @@ def save_frame(del_files, cmd, rgb, size, overlay=None, ext='png'):
 
 
 
-Layout = collections.namedtuple('Layout', ('size', 'window', 'render_size'))
+Layout = collections.namedtuple('Layout', ('size', 'window', 'inference_size', 'render_size'))
 
 def make_layout(inference_size, render_size):
     inference_size = Size(*inference_size)
+    print(inference_size)
     render_size = Size(*render_size)
+    print(render_size)
     size = min_outer_size(inference_size, render_size)
     window = center_inside(render_size, size)
-    return Layout(size=size, window=window, render_size=render_size)
+    return Layout(size=size, window=window,
+                  inference_size=inference_size, render_size=render_size)
 
 def caps_size(caps):
     structure = caps.get_structure(0)
@@ -211,7 +214,7 @@ def on_bus_message(bus, message, pipeline, loop):
         sys.stderr.write('Error: %s: %s\n' % (err, debug))
         Gtk.main_quit()
 
-def on_new_sample(sink, pipeline, layout, images, get_command):
+def on_new_sample(sink, pipeline, render_overlay, layout, images, get_command):
     with pull_sample(sink) as (sample, data):
         custom_command = None
         save_frame = False
@@ -233,18 +236,20 @@ def on_new_sample(sink, pipeline, layout, images, get_command):
         elif command == COMMAND_PRINT_INFO:
             print('Timestamp: %.2f' % time.monotonic())
             print('Render size: %d x %d' % layout.render_size)
+            print('Inference size: %d x %d' % layout.inference_size)
         elif  command == COMMAND_QUIT:
             Gtk.main_quit()
         else:
             custom_command = command
 
-        svg = "some string"
+        svg = render_overlay(np.frombuffer(data, dtype=np.uint8),
+                             command=custom_command)
         overlay = pipeline.get_by_name('overlay')
         if overlay:
-            overlay.set_svg(svg)
+            overlay.set_svg(svg, layout.render_size)
 
         if save_frame:
-            images.put((del_files, cmd, data, svg))
+            images.put((del_files, cmd, data, layout.inference_size, svg))
          
         
         
@@ -253,32 +258,35 @@ def on_new_sample(sink, pipeline, layout, images, get_command):
 
 def run_gen(render_overlay_gen, *, source, downscale, loop, display):
     inference_size = render_overlay_gen.send(None)  # Initialize.
-    return run(source=source,
+    return run(inference_size,
+        lambda tensor, layout, command:
+            render_overlay_gen.send((tensor, layout, command)),
+        source=source,
         downscale=downscale,
         loop=loop,
         display=display)
 
-def run(*, source, downscale, loop, display):
-    result = get_pipeline(source, downscale, display)
+def run(inference_size, render_overlay, *, source, downscale, loop, display):
+    result = get_pipeline(source, inference_size, downscale, display)
     if result:
         layout, pipeline = result
-        run_pipeline(pipeline, layout, loop, display)
+        run_pipeline(pipeline, layout, loop, render_overlay, display)
         return True
 
     return False
 
-def get_pipeline(source, downscale, display):
+def get_pipeline(source, inference_size, downscale, display):
     fmt = parse_format(source)
     if fmt:
-        # layout = make_layout(inference_size, fmt.size)
-        return camera_pipeline(fmt, display)
+        layout = make_layout(inference_size, fmt.size)
+        return layout, camera_pipeline(fmt, layout, display)
 
     filename = os.path.expanduser(source)
     if os.path.isfile(filename):
         info = get_video_info(filename)
         render_size = Size(info.get_width(), info.get_height()) / downscale
-        # layout = make_layout(inference_size, render_size)
-        return file_pipline(info.is_image(), filename, display)
+        layout = make_layout(inference_size, render_size)
+        return layout, file_pipline(info.is_image(), filename, layout, display)
 
     return None
 
@@ -288,7 +296,7 @@ def camera_pipeline(fmt, layout, display):
     else:
         return camera_display_pipeline(fmt, layout)
 
-def file_pipline(is_image, filename, display):
+def file_pipline(is_image, filename, layout, display):
     if display is Display.NONE:
         if is_image:
             return image_headless_pipeline(filename, layout)
@@ -304,7 +312,7 @@ def file_pipline(is_image, filename, display):
 def quit():
     Gtk.main_quit()
 
-def run_pipeline(pipeline, loop, display, handle_sigint=True, signals=None):
+def run_pipeline(pipeline, layout, loop, render_overlay, display, handle_sigint=True, signals=None):
     # Create pipeline
     pipeline = describe(pipeline)
     print(pipeline)
@@ -347,6 +355,7 @@ def run_pipeline(pipeline, loop, display, handle_sigint=True, signals=None):
     with Worker(save_frame) as images, Commands() as get_command:
         signals = {'appsink':
             {'new-sample': functools.partial(on_new_sample,
+                render_overlay=functools.partial(render_overlay, layout=layout),
                 layout=layout,
                 images=images,
                 get_command=get_command)},
