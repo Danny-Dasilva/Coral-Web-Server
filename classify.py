@@ -105,7 +105,7 @@ def render_gen(args):
     engines = itertools.cycle(engines)
     engine = next(engines)
 
-    labels = utils.load_labels(args.labels)
+    #labels = utils.load_labels(args.labels)
     draw_overlay = True
     
 
@@ -122,7 +122,7 @@ def render_gen(args):
             
             inference_time = time.monotonic() - start
             
-            results = [(labels[i], score) for i, score in results]
+            #results = [(labels[i], score) for i, score in results]
             # b =  [(score) for i, score in results]
             for i, score in results:
                 score = score
