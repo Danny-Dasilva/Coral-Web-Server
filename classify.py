@@ -95,21 +95,21 @@ def print_results(inference_rate, results):
         
 
 def render_gen(args):
-    #acc = accumulator(size=args.window, top_k=args.top_k)
-    #acc.send(None)  # Initialize.
+    acc = accumulator(size=args.window, top_k=args.top_k)
+    acc.send(None)  # Initialize.
 
     fps_counter = utils.avg_fps_counter(30)
 
-    # engines, titles = utils.make_engines(args.model, ClassificationEngine)
-    # assert utils.same_input_image_sizes(engines)
-    # engines = itertools.cycle(engines)
-    # engine = next(engines)
+    engines, titles = utils.make_engines(args.model, ClassificationEngine)
+    assert utils.same_input_image_sizes(engines)
+    engines = itertools.cycle(engines)
+    engine = next(engines)
 
-    # labels = utils.load_labels(args.labels)
+    labels = utils.load_labels(args.labels)
     draw_overlay = True
     
 
-    # yield utils.input_image_size(engine)
+    yield utils.input_image_size(engine)
 
     output = None
     while True:
@@ -118,23 +118,23 @@ def render_gen(args):
         inference_rate = next(fps_counter)
         if draw_overlay:
             start = time.monotonic()
-            #results = engine.ClassifyWithInputTensor(tensor, threshold=args.threshold, top_k=args.top_k)
+            results = engine.ClassifyWithInputTensor(tensor, threshold=args.threshold, top_k=args.top_k)
             
             inference_time = time.monotonic() - start
             
-            # results = [(labels[i], score) for i, score in results]
+            results = [(labels[i], score) for i, score in results]
             # b =  [(score) for i, score in results]
             for i, score in results:
                 score = score
             b = score * 100
             a = results
             
-            # results = acc.send(results)
+            results = acc.send(results)
             
             if args.print:
                 print_results(inference_rate, results)
 
-            # title = titles[engine]
+            title = titles[engine]
             output = overlay(title, results, inference_time, inference_rate, layout)
 
 
@@ -151,14 +151,19 @@ def render_gen(args):
         if command == 'o':
             draw_overlay = not draw_overlay
         elif command == 'n':
-            #engine = next(engines)
-            print("6")
+            engine = next(engines)
 
 def add_render_gen_args(parser):
+    parser.add_argument('--model', required=True,
+                        help='.tflite model path')
+    parser.add_argument('--labels', required=True,
+                        help='label file path')
     parser.add_argument('--window', type=int, default=10,
                         help='number of frames to accumulate inference results')
-    
-    
+    parser.add_argument('--top_k', type=int, default=1,
+                        help='number of classes with highest score to display')
+    parser.add_argument('--threshold', type=float, default=0.1,
+                        help='class score threshold')
     parser.add_argument('--print', default=False, action='store_true',
                         help='Print inference results')
 
