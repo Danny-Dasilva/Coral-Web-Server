@@ -11,7 +11,6 @@ class Camera:
         self._layout = gstreamer.make_layout(inference_size, render_size)
         self._loop = loop
         self._thread = None
-        self.render_overlay = None
 
     @property
     def resolution(self):
@@ -24,10 +23,7 @@ class Camera:
         def on_buffer(data, _):
             obj.write(data)
 
-        def render_overlay():
-            if self.render_overlay:
-                self.render_overlay()
-            return None
+        
 
         signals = {
           'h264sink': {'new-sample': gstreamer.new_sample_callback(on_buffer)},
@@ -36,8 +32,7 @@ class Camera:
         pipeline = self.make_pipeline(format, profile, inline_headers, bitrate, intra_period)
 
         self._thread = threading.Thread(target=gstreamer.run_pipeline,
-                                        args=(pipeline, self._layout, self._loop,
-                                              render_overlay, gstreamer.Display.NONE,
+                                        args=(pipeline, self._layout, self._loop, gstreamer.Display.NONE,
                                               False, signals))
         self._thread.start()
 

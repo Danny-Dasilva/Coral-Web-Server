@@ -212,7 +212,7 @@ def on_bus_message(bus, message, pipeline, loop):
         sys.stderr.write('Error: %s: %s\n' % (err, debug))
         Gtk.main_quit()
 
-def on_new_sample(sink, pipeline, render_overlay, layout, images, get_command):
+def on_new_sample(sink, pipeline, layout, images, get_command):
     with pull_sample(sink) as (sample, data):
         custom_command = None
         save_frame = False
@@ -240,7 +240,7 @@ def on_new_sample(sink, pipeline, render_overlay, layout, images, get_command):
         else:
             custom_command = command
 
-        svg = render_overlay()
+        svg = str(svg.Svg())
         overlay = pipeline.get_by_name('overlay')
         if overlay:
             overlay.set_svg(svg)
@@ -256,18 +256,16 @@ def on_new_sample(sink, pipeline, render_overlay, layout, images, get_command):
 def run_gen(render_overlay_gen, *, source, downscale, loop, display):
     inference_size = render_overlay_gen.send(None)  # Initialize.
     return run(inference_size,
-        lambda tensor, layout, command:
-            render_overlay_gen.send((tensor, layout, command)),
         source=source,
         downscale=downscale,
         loop=loop,
         display=display)
 
-def run(inference_size, render_overlay, *, source, downscale, loop, display):
+def run(inference_size, *, source, downscale, loop, display):
     result = get_pipeline(source, inference_size, downscale, display)
     if result:
         layout, pipeline = result
-        run_pipeline(pipeline, layout, loop, render_overlay, display)
+        run_pipeline(pipeline, layout, loop, display)
         return True
 
     return False
@@ -309,7 +307,7 @@ def file_pipline(is_image, filename, layout, display):
 def quit():
     Gtk.main_quit()
 
-def run_pipeline(pipeline, layout, loop, render_overlay, display, handle_sigint=True, signals=None):
+def run_pipeline(pipeline, layout, loop, display, handle_sigint=True, signals=None):
     # Create pipeline
     pipeline = describe(pipeline)
     print(pipeline)
@@ -352,7 +350,6 @@ def run_pipeline(pipeline, layout, loop, render_overlay, display, handle_sigint=
     with Worker(save_frame) as images, Commands() as get_command:
         signals = {'appsink':
             {'new-sample': functools.partial(on_new_sample,
-                render_overlay=functools.partial(render_overlay),
                 layout=layout,
                 images=images,
                 get_command=get_command)},
