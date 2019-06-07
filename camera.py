@@ -7,8 +7,8 @@ import pipelines
 from gst import *
 
 class Camera:
-    def __init__(self, render_size, inference_size, loop):
-        #self._layout = gstreamer.make_layout(inference_size, render_size)
+    def __init__(self, render_size, loop):
+        self._layout = gstreamer.make_layout(render_size)
         self._loop = loop
         self._thread = None
 
@@ -44,9 +44,9 @@ class Camera:
         raise NotImplemented
 
 class FileCamera(Camera):
-    def __init__(self, filename, inference_size, loop):
+    def __init__(self, filename, loop):
         info = gstreamer.get_video_info(filename)
-        super().__init__((info.get_width(), info.get_height()), inference_size,
+        super().__init__((info.get_width(), info.get_height()),
                           loop=loop)
         self._filename = filename
 
@@ -54,20 +54,20 @@ class FileCamera(Camera):
         return pipelines.video_streaming_pipeline(self._filename, self._layout)
 
 class DeviceCamera(Camera):
-    def __init__(self, fmt, inference_size):
-        super().__init__(fmt.size, inference_size, loop=False)
+    def __init__(self, fmt):
+        super().__init__(fmt.size, loop=False)
         self._fmt = fmt
 
     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
         return pipelines.camera_streaming_pipeline(self._fmt, profile, bitrate, self._layout)
 
-def make_camera(source, inference_size, loop):
+def make_camera(source, loop):
     fmt = parse_format(source)
     if fmt:
-        return DeviceCamera(fmt, inference_size)
+        return DeviceCamera(fmt)
 
     filename = os.path.expanduser(source)
     if os.path.isfile(filename):
-        return FileCamera(filename, inference_size, loop)
+        return FileCamera(filename, loop)
 
     return None

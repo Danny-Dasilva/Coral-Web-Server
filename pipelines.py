@@ -20,14 +20,13 @@ def h264_sink():
     return Sink('app', name='h264sink', emit_signals=True, max_buffers=1, drop=False, sync=False)
 
 def inference_pipeline(layout, stillimage=False):
-    size = max_inner_size(layout.render_size, layout.inference_size)
+    size = max_inner_size(layout.render_size, layout)
     if stillimage:
         return [
             Filter('videoconvert'),
             Filter('videoscale'),
             Caps('video/x-raw', format='RGB', width=size.width, height=size.height),
             Filter('videobox', autocrop=True),
-            Caps('video/x-raw', width=layout.inference_size.width, height=layout.inference_size.height),
             Filter('imagefreeze'),
             Sink('app', name='appsink', emit_signals=True, max_buffers=1, drop=True, sync=False),
         ]
@@ -37,8 +36,7 @@ def inference_pipeline(layout, stillimage=False):
         Caps('video/x-raw', format='RGBA', width=size.width, height=size.height),
         Filter('videoconvert'),
         Caps('video/x-raw', format='RGB', width=size.width, height=size.height),
-        Filter('videobox', autocrop=True),
-        Caps('video/x-raw', width=layout.inference_size.width, height=layout.inference_size.height),
+        Filter('videobox', autocrop=True),,
         Sink('app', name='appsink', emit_signals=True, max_buffers=1, drop=True, sync=False),
     ]
 

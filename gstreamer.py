@@ -148,15 +148,14 @@ def save_frame(del_files, cmd, rgb, size, overlay=None, ext='png'):
 
 
 
-Layout = collections.namedtuple('Layout', ('size', 'window', 'inference_size', 'render_size'))
+Layout = collections.namedtuple('Layout', ('size', 'window', 'render_size'))
 
-def make_layout(inference_size, render_size):
-    inference_size = Size(*inference_size)
+def make_layout( render_size):
+    
     render_size = Size(*render_size)
-    size = min_outer_size(inference_size, render_size)
+    size = min_outer_size( render_size)
     window = center_inside(render_size, size)
-    return Layout(size=size, window=window,
-                  inference_size=inference_size, render_size=render_size)
+    return Layout(size=size, window=window, render_size=render_size)
 
 def caps_size(caps):
     structure = caps.get_structure(0)
@@ -234,7 +233,6 @@ def on_new_sample(sink, pipeline, layout, images, get_command):
         elif command == COMMAND_PRINT_INFO:
             print('Timestamp: %.2f' % time.monotonic())
             print('Render size: %d x %d' % layout.render_size)
-            print('Inference size: %d x %d' % layout.inference_size)
         elif  command == COMMAND_QUIT:
             Gtk.main_quit()
         else:
@@ -246,7 +244,7 @@ def on_new_sample(sink, pipeline, layout, images, get_command):
             overlay.set_svg(svg)
 
         if save_frame:
-            images.put((del_files, cmd, data, layout.inference_size, svg))
+            images.put((del_files, cmd, data, svg))
          
         
         
@@ -255,14 +253,13 @@ def on_new_sample(sink, pipeline, layout, images, get_command):
 
 def run_gen(render_overlay_gen, *, source, downscale, loop, display):
     inference_size = render_overlay_gen.send(None)  # Initialize.
-    return run(inference_size,
-        source=source,
+    return run(source=source,
         downscale=downscale,
         loop=loop,
         display=display)
 
-def run(inference_size, *, source, downscale, loop, display):
-    result = get_pipeline(source, inference_size, downscale, display)
+def run(*, source, downscale, loop, display):
+    result = get_pipeline(source, downscale, display)
     if result:
         layout, pipeline = result
         run_pipeline(pipeline, layout, loop, display)
@@ -270,7 +267,7 @@ def run(inference_size, *, source, downscale, loop, display):
 
     return False
 
-def get_pipeline(source, inference_size, downscale, display):
+def get_pipeline(source, downscale, display):
     fmt = parse_format(source)
     if fmt:
         # layout = make_layout(inference_size, fmt.size)
