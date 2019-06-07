@@ -8,7 +8,7 @@ from gst import *
 
 class Camera:
     def __init__(self, render_size, loop):
-        self._layout = gstreamer.make_layout(render_size)
+        
         self._loop = loop
         self._thread = None
 
