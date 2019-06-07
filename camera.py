@@ -24,9 +24,9 @@ class Camera:
         def on_buffer(data, _):
             obj.write(data)
 
-        def render_overlay(layout, command):
+        def render_overlay():
             if self.render_overlay:
-                self.render_overlay(layout, command)
+                self.render_overlay()
             return None
 
         signals = {

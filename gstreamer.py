@@ -240,8 +240,7 @@ def on_new_sample(sink, pipeline, render_overlay, layout, images, get_command):
         else:
             custom_command = command
 
-        svg = render_overlay(np.frombuffer(data, dtype=np.uint8),
-                             command=custom_command)
+        svg = render_overlay()
         overlay = pipeline.get_by_name('overlay')
         if overlay:
             overlay.set_svg(svg, layout.render_size)
