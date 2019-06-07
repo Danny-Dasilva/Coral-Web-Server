@@ -8,13 +8,14 @@ from gst import *
 
 class Camera:
     def __init__(self, render_size, loop):
-        
+        inference_size = (224, 224)
+        self._layout = gstreamer.make_layout(inference_size, render_size)
         self._loop = loop
         self._thread = None
 
     @property
     def resolution(self):
-        return('640x480')
+        return self._layout.render_size
 
     def request_key_frame(self):
         pass
