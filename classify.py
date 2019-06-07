@@ -152,9 +152,9 @@ def render_gen(args):
             draw_overlay = not draw_overlay
         elif command == 'n':
             #engine = next(engines)
+            print("6")
 
 def add_render_gen_args(parser):
-    
     parser.add_argument('--window', type=int, default=10,
                         help='number of frames to accumulate inference results')
     
