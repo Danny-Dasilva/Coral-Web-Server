@@ -151,7 +151,7 @@ def save_frame(del_files, cmd, rgb, size, overlay=None, ext='png'):
 Layout = collections.namedtuple('Layout', ('size', 'window', 'render_size'))
 
 def make_layout(layout, render_size):
-    
+    inference_size = (224, 224)
     render_size = Size(*render_size)
     print(render_size)
     size = min_outer_size(inference_size, render_size)
