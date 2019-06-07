@@ -109,7 +109,7 @@ def render_gen(args):
     draw_overlay = True
     
 
-    yield utils.input_image_size(engine)
+    # yield utils.input_image_size(engine)
 
     output = None
     while True:
@@ -118,7 +118,7 @@ def render_gen(args):
         inference_rate = next(fps_counter)
         if draw_overlay:
             start = time.monotonic()
-            results = engine.ClassifyWithInputTensor(tensor, threshold=args.threshold, top_k=args.top_k)
+            #results = engine.ClassifyWithInputTensor(tensor, threshold=args.threshold, top_k=args.top_k)
             
             inference_time = time.monotonic() - start
             
@@ -151,7 +151,7 @@ def render_gen(args):
         if command == 'o':
             draw_overlay = not draw_overlay
         elif command == 'n':
-            engine = next(engines)
+            #engine = next(engines)
 
 def add_render_gen_args(parser):
     
