@@ -39,7 +39,7 @@ def run_server(add_render_gen_args, render_gen):
         signal.pause()
 
 
-def run_app(add_render_gen_args, ):
+def run_app(add_render_gen_args, render_gen):
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--source',
                         help='/dev/videoN:FMT:WxH:N/D or .mp4 file or image file',
