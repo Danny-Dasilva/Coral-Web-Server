@@ -39,6 +39,7 @@ def render_gen(args):
     
 
     yield utils.input_image_size(engine)
+    print('utils', utils.input_image_size(engine))
 
     output = None
     while True:
