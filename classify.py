@@ -1,10 +1,4 @@
-"""A demo which runs object classification on camera frames."""
 
-# export TEST_DATA=/usr/lib/python3/dist-packages/edgetpu/test_data
-#
-# python3 -m edgetpuvision.classify \
-#   --model ${TEST_DATA}/mobilenet_v2_1.0_224_inat_bird_quant.tflite \
-#   --labels ${TEST_DATA}/inat_bird_labels.txt
 
 import argparse
 import collections
@@ -12,7 +6,6 @@ import itertools
 import time
 import logging
 
-from edgetpu.classification.engine import ClassificationEngine
 
 import svg
 import utils
@@ -28,15 +21,8 @@ def render_gen(args):
     
 
     fps_counter = utils.avg_fps_counter(30)
-
-
-    
     draw_overlay = True
-    
-    
     yield utils.input_image_size()
-    
-    
     while True:
         #tensor, layout, command = (yield output)
         
@@ -50,8 +36,6 @@ def render_gen(args):
     
 
 def add_render_gen_args(parser):
-    parser.add_argument('--model', required=True,
-                        help='.tflite model path')
     
     parser.add_argument('--window', type=int, default=10,
                         help='number of frames to accumulate inference results')
