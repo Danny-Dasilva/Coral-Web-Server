@@ -41,7 +41,7 @@ def render_gen(args):
     yield utils.input_image_size(engine)
 
     output = None
-    while True
+    while True:
         
         inference_rate = next(fps_counter)
         if draw_overlay:
