@@ -9,15 +9,13 @@ from gst import *
 class Camera:
     def __init__(self, render_size, inference_size, loop):
         self._layout = gstreamer.make_layout(inference_size, render_size)
-        print("interference size",inference_size)
-        print(render_size)
+        
         self._loop = loop
         self._thread = None
         self.render_overlay = None
 
     @property
     def resolution(self):
-        print(type(self._layout.render_size))
         return self._layout.render_size
 
     def request_key_frame(self):

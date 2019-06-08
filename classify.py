@@ -42,29 +42,26 @@ def render_gen(args):
 
     output = None
     while True:
-        tensor, layout, command = (yield output)
+        #tensor, layout, command = (yield output)
         
         inference_rate = next(fps_counter)
         if draw_overlay:
             start = time.monotonic()
-            results = engine.ClassifyWithInputTensor(tensor, threshold=args.threshold, top_k=args.top_k)
+           # results = engine.ClassifyWithInputTensor(tensor, threshold=args.threshold, top_k=args.top_k)
             
-            inference_time = time.monotonic() - start
+           # inference_time = time.monotonic() - start
             
-            results = [(labels[i], score) for i, score in results]
-            # b =  [(score) for i, score in results]
-            for i, score in results:
-                score = score
-            b = score * 100
-            a = results
+           # results = [(labels[i], score) for i, score in results]
+           
+           
             
-            results = acc.send(results)
+           # results = acc.send(results)
             
-            if args.print:
-                print_results(inference_rate, results)
+            #if args.print:
+             #   print_results(inference_rate, results)
 
             title = titles[engine]
-            output = overlay(title, results, inference_time, inference_rate, layout)
+            #output = overlay(title, results, inference_time, inference_rate, layout)
 
 
             # Confidence Values
