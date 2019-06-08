@@ -155,8 +155,7 @@ def add_render_gen_args(parser):
     parser.add_argument('--window', type=int, default=10,
                         help='number of frames to accumulate inference results')
     
-    parser.add_argument('--threshold', type=float, default=0.1,
-                        help='class score threshold')
+    
     parser.add_argument('--print', default=False, action='store_true',
                         help='Print inference results')
 
