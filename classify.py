@@ -49,10 +49,10 @@ def render_gen(args):
         else:
             output = None
 
-        if command == 'o':
-            draw_overlay = not draw_overlay
-        elif command == 'n':
-            engine = next(engines)
+        # if command == 'o':
+        #     draw_overlay = not draw_overlay
+        # elif command == 'n':
+        #     engine = next(engines)
 
 def add_render_gen_args(parser):
     parser.add_argument('--model', required=True,
