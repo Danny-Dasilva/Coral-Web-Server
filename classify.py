@@ -95,16 +95,16 @@ def render_gen(args):
 
     fps_counter = utils.avg_fps_counter(30)
 
-    # engines, titles = utils.make_engines(args.model, ClassificationEngine)
-    # assert utils.same_input_image_sizes(engines)
-    # engines = itertools.cycle(engines)
-    # engine = next(engines)
+    engines, titles = utils.make_engines(args.model, ClassificationEngine)
+    assert utils.same_input_image_sizes(engines)
+    engines = itertools.cycle(engines)
+    engine = next(engines)
 
     
     draw_overlay = True
     
 
-    #yield utils.input_image_size(engine)
+    yield utils.input_image_size(engine)
 
     output = None
     while True:
@@ -149,7 +149,8 @@ def render_gen(args):
             engine = next(engines)
 
 def add_render_gen_args(parser):
-    
+    parser.add_argument('--model', required=True,
+                        help='.tflite model path')
     
     parser.add_argument('--window', type=int, default=10,
                         help='number of frames to accumulate inference results')
