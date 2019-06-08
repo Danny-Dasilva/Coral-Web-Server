@@ -30,6 +30,8 @@ def render_gen(args):
     fps_counter = utils.avg_fps_counter(30)
 
     engines, titles = utils.make_engines(args.model, ClassificationEngine)
+    print(args.model)
+    print('engines1', engines)
     assert utils.same_input_image_sizes(engines)
     engines = itertools.cycle(engines)
     engine = next(engines)
@@ -37,10 +39,9 @@ def render_gen(args):
     
     draw_overlay = True
     
-    print('utils',engine)
+    
     yield utils.input_image_size(engine)
-    print('utils',engine)
-
+    
     output = None
     while True:
         #tensor, layout, command = (yield output)
