@@ -12,7 +12,6 @@ import itertools
 import time
 import logging
 
-from edgetpu.classification.engine import ClassificationEngine
 
 import svg
 import utils
@@ -34,30 +33,27 @@ def print_results(inference_rate, results):
         
 
 def render_gen(args):
-    acc = accumulator(size=args.window, top_k=args.top_k)
-    acc.send(None)  # Initialize.
+    
+    
 
     fps_counter = utils.avg_fps_counter(30)
 
-    engines, titles = utils.make_engines(args.model, ClassificationEngine)
-    assert utils.same_input_image_sizes(engines)
-    engines = itertools.cycle(engines)
-    engine = next(engines)
-
+    
+    
     labels = utils.load_labels(args.labels)
     draw_overlay = True
     
 
-    yield utils.input_image_size(engine)
+    
 
     output = None
     while True:
-        tensor, layout, command = (yield output)
+        layout, command = (yield output)
         
         inference_rate = next(fps_counter)
         if draw_overlay:
             start = time.monotonic()
-            results = engine.ClassifyWithInputTensor(tensor, threshold=args.threshold, top_k=args.top_k)
+            
             
             inference_time = time.monotonic() - start
             
@@ -68,14 +64,13 @@ def render_gen(args):
             b = score * 100
             a = results
             
-            results = acc.send(results)
+            results = 'acc.send(results)'
             
             if args.print:
                 print_results(inference_rate, results)
 
-            title = titles[engine]
-            output = overlay(title, results, inference_time, inference_rate, layout)
-
+            
+            
 
             # Confidence Values
             # print(a)
@@ -106,8 +101,3 @@ def add_render_gen_args(parser):
     parser.add_argument('--print', default=False, action='store_true',
                         help='Print inference results')
 
-def main():
-    run_app(add_render_gen_args, render_gen)
-
-if __name__ == '__main__':
-    main()
