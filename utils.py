@@ -12,8 +12,10 @@ def load_labels(path):
 
 
 def input_image_size(engine):
-    _, h, w, _ = engine.get_input_tensor_shape()
-    print('wh',w, h)
+    #_, h, w, _ = engine.get_input_tensor_shape()
+    #print('wh',w, h)
+    w = 224
+    h = 224
     return w, h
 
 def same_input_image_sizes(engines):
