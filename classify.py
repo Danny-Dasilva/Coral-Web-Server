@@ -18,8 +18,6 @@ logger = logging.getLogger(__name__)
         
 
 def render_gen(args):
-    
-
     fps_counter = utils.avg_fps_counter(30)
     draw_overlay = True
     yield utils.input_image_size()
@@ -35,10 +33,4 @@ def render_gen(args):
 
     
 
-def add_render_gen_args(parser):
-    
-    parser.add_argument('--window', type=int, default=10,
-                        help='number of frames to accumulate inference results')
-    parser.add_argument('--print', default=False, action='store_true',
-                        help='Print inference results')
 

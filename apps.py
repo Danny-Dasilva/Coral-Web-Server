@@ -10,7 +10,7 @@ import svg
 
 EMPTY_SVG = str(svg.Svg())
 
-def run_server(add_render_gen_args, render_gen):
+def run_server(render_gen):
     logging.basicConfig(level=logging.INFO)
 
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -22,7 +22,7 @@ def run_server(add_render_gen_args, render_gen):
     parser.add_argument('--loop', default=False, action='store_true',
                         help='Loop input video file')
 
-    add_render_gen_args(parser)
+    
     args = parser.parse_args()
 
     gen = render_gen(args)
