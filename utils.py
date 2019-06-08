@@ -13,9 +13,12 @@ def load_labels(path):
 
 def input_image_size(engine):
     _, h, w, _ = engine.get_input_tensor_shape()
+    print('wh',w, h)
     return w, h
 
 def same_input_image_sizes(engines):
+    print('autistic return statement', len({input_image_size(engine) for engine in engines}) == 1
+)
     return len({input_image_size(engine) for engine in engines}) == 1
 
 def avg_fps_counter(window_size):
