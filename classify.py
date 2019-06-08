@@ -16,7 +16,7 @@ from edgetpu.classification.engine import ClassificationEngine
 
 import svg
 import utils
-from apps import run_app
+#from apps import run_app
 
 logger = logging.getLogger(__name__)
 
