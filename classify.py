@@ -15,7 +15,7 @@ import logging
 from edgetpu.classification.engine import ClassificationEngine
 
 import svg
-import utils, input_image_size
+import utils
 #from apps import run_app
 
 logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ def render_gen(args):
     draw_overlay = True
     
     
-    yield input_image_size()
+    yield utils.input_image_size()
     
     
     while True:
