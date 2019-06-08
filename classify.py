@@ -29,8 +29,8 @@ def render_gen(args):
 
     fps_counter = utils.avg_fps_counter(30)
 
-    engines, titles = utils.make_engines(args.model, ClassificationEngine)
-    print(args.model)
+    engines = utils.make_engines(args.model, ClassificationEngine)
+    print(ClassificationEngine)
     print('engines1', engines)
     assert utils.same_input_image_sizes(engines)
     engines = itertools.cycle(engines)
