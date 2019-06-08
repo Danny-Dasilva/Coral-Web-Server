@@ -81,11 +81,7 @@ def top_results(window, top_k):
     
     return sorted(total_scores.items(), key=lambda kv: kv[1], reverse=True)[:top_k]
 
-def accumulator(size, top_k):
-    window = collections.deque(maxlen=size)
-    window.append((yield []))
-    while True:
-        window.append((yield top_results(window, top_k)))
+
 
 def print_results(inference_rate, results):
     print('\nInference (rate=%.2f fps):' % inference_rate)
@@ -95,8 +91,7 @@ def print_results(inference_rate, results):
         
 
 def render_gen(args):
-    # acc = accumulator(size=args.window, top_k=args.top_k)
-    #acc.send(None)  # Initialize.
+    
 
     fps_counter = utils.avg_fps_counter(30)
 
@@ -159,8 +154,7 @@ def add_render_gen_args(parser):
     
     parser.add_argument('--window', type=int, default=10,
                         help='number of frames to accumulate inference results')
-    # parser.add_argument('--top_k', type=int, default=1,
-    #                     help='number of classes with highest score to display')
+    
     parser.add_argument('--threshold', type=float, default=0.1,
                         help='class score threshold')
     parser.add_argument('--print', default=False, action='store_true',
