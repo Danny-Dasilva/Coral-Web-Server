@@ -38,7 +38,7 @@ def render_gen(args):
     draw_overlay = True
     
 
-    yield utils.input_image_size(engine)
+    #yield utils.input_image_size(engine)
     print('utils', utils.input_image_size(engine))
 
     output = None
