@@ -7,7 +7,7 @@ import time
 import logging
 
 
-import svg
+
 import utils
 #from apps import run_app
 

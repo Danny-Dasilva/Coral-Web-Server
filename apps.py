@@ -6,9 +6,8 @@ from camera import make_camera
 from gstreamer import Display, run_gen
 from streaming.server import StreamingServer
 
-import svg
 
-EMPTY_SVG = str(svg.Svg())
+
 
 def run_server(render_gen):
     logging.basicConfig(level=logging.INFO)

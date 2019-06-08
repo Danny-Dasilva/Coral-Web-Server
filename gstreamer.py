@@ -244,13 +244,9 @@ def on_new_sample(sink, pipeline, layout, images, get_command):
             custom_command = command
 
         
-        # svg = "adasd"                  
-        # overlay = pipeline.get_by_name('overlay')
-        # if overlay:
-        #     overlay.set_svg(svg, layout.render_size)
-
+      
         if save_frame:
-            images.put((del_files, cmd, data, layout.inference_size, svg))
+            images.put((del_files, cmd, data, layout.inference_size))
          
         
         
