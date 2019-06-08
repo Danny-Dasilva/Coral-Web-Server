@@ -1,7 +1,6 @@
 
 
-from apps import run_server
-from classify import render_gen
+from apps import run_server, render_gen
 
 
 def main():

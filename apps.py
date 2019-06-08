@@ -1,12 +1,31 @@
 import argparse
 import logging
 import signal
-
+import utils
+import time
 from camera import make_camera
 from gstreamer import Display, run_gen
 from streaming.server import StreamingServer
 
+logger = logging.getLogger(__name__)
 
+
+    
+        
+
+def render_gen(args):
+    fps_counter = utils.avg_fps_counter(30)
+    draw_overlay = True
+    yield utils.input_image_size()
+    while True:
+        #tensor, layout, command = (yield output)
+        
+        inference_rate = next(fps_counter)
+        if draw_overlay:
+            start = time.monotonic()
+       
+        else:
+            output = None
 
 
 def run_server(render_gen):
