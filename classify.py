@@ -32,7 +32,7 @@ def render_gen(args):
     engines, titles = utils.make_engines(args.model, ClassificationEngine)
     print(ClassificationEngine)
     print('engines1', engines)
-    assert utils.same_input_image_sizes(engines)
+    #assert utils.same_input_image_sizes(engines)
     engines = itertools.cycle(engines)
     engine = next(engines)
 
@@ -42,7 +42,7 @@ def render_gen(args):
     
     yield utils.input_image_size(engine)
     
-    output = None
+    
     while True:
         #tensor, layout, command = (yield output)
         
