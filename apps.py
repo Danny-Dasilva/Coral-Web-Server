@@ -32,7 +32,8 @@ def run_server(add_render_gen_args, render_gen):
 
     with StreamingServer(camera, args.bitrate) as server:
         def render_overlay(tensor, layout, command):
-            server.send_overlay(EMPTY_SVG)
+            # server.send_overlay(EMPTY_SVG)
+            print('meme')
 
         camera.render_overlay = render_overlay
         signal.pause()
