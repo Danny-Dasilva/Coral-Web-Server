@@ -31,10 +31,5 @@ def run_server(add_render_gen_args, render_gen):
     assert camera is not None
 
     with StreamingServer(camera, args.bitrate) as server:
-        def render_overlay(tensor, layout, command):
-            
-            print('meme')
-
-        #camera.render_overlay = render_overlay
         signal.pause()
 
