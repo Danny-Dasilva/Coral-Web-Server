@@ -38,14 +38,39 @@ def render_gen(args):
     draw_overlay = True
     
 
-    #yield utils.input_image_size(engine)
+    yield utils.input_image_size(engine)
 
     output = None
     while True:
+        #tensor, layout, command = (yield output)
         
         inference_rate = next(fps_counter)
         if draw_overlay:
-            start = time.monotonic()     
+            start = time.monotonic()
+           # results = engine.ClassifyWithInputTensor(tensor, threshold=args.threshold, top_k=args.top_k)
+            
+           # inference_time = time.monotonic() - start
+            
+           # results = [(labels[i], score) for i, score in results]
+           
+           
+            
+           # results = acc.send(results)
+            
+            #if args.print:
+             #   print_results(inference_rate, results)
+
+            title = titles[engine]
+            #output = overlay(title, results, inference_time, inference_rate, layout)
+
+
+            # Confidence Values
+            # print(a)
+            # if b > 22:
+            #     print(a, "Correct guess")
+            # else:
+            #     print(b,"threshold not met")
+            
         else:
             output = None
 
