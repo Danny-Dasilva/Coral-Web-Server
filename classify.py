@@ -21,14 +21,6 @@ import utils
 logger = logging.getLogger(__name__)
 
 
-
-
-
-
-def print_results(inference_rate, results):
-    print('\nInference (rate=%.2f fps):' % inference_rate)
-    for label, score in results:
-        print('  %s, score=%.2f' % (label, score))
     
         
 
@@ -96,13 +88,6 @@ def add_render_gen_args(parser):
     
     parser.add_argument('--window', type=int, default=10,
                         help='number of frames to accumulate inference results')
-    
-    
     parser.add_argument('--print', default=False, action='store_true',
                         help='Print inference results')
 
-def main():
-    run_app(add_render_gen_args, render_gen)
-
-if __name__ == '__main__':
-    main()
