@@ -27,10 +27,10 @@ class Camera:
         def on_buffer(data, _):
             obj.write(data)
 
-        def render_overlay(layout, command):
-            if self.render_overlay:
-                self.render_overlay(layout, command)
-            return None
+        # def render_overlay(tensor, layout, command):
+        #     if self.render_overlay:
+        #         self.render_overlay(tensor, layout, command)
+        #     return None
 
         signals = {
           'h264sink': {'new-sample': gstreamer.new_sample_callback(on_buffer)},
@@ -39,9 +39,9 @@ class Camera:
         pipeline = self.make_pipeline(format, profile, inline_headers, bitrate, intra_period)
 
         self._thread = threading.Thread(target=gstreamer.run_pipeline,
-                                        args=(pipeline, self._layout, self._loop,
-                                              render_overlay, gstreamer.Display.NONE,
+                                        args=(pipeline, self._layout, self._loop, gstreamer.Display.NONE,
                                               False, signals))
+                                              #render_overlay, gstreamer.Display.NONE,
         self._thread.start()
 
     def stop_recording(self):
