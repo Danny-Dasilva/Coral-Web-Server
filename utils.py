@@ -18,10 +18,6 @@ def input_image_size(engine):
     h = 224
     return w, h
 
-def same_input_image_sizes(engines):
-    print('autistic return statement', len({input_image_size(engine) for engine in engines}) == 1
-)
-    return len({input_image_size(engine) for engine in engines}) == 1
 
 def avg_fps_counter(window_size):
     window = collections.deque(maxlen=window_size)
