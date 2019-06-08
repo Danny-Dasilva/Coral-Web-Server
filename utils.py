@@ -11,9 +11,7 @@ def load_labels(path):
        return {int(num): text.strip() for num, text in lines}
 
 
-def input_image_size(engine):
-    #_, h, w, _ = engine.get_input_tensor_shape()
-    #print('wh',w, h)
+def input_image_size():
     w = 224
     h = 224
     return w, h
@@ -30,15 +28,4 @@ def avg_fps_counter(window_size):
         prev = curr
         yield len(window) / sum(window)
 
-def make_engines(models, engine_class):
-    engines, titles = [], {}
-    for model in models.split(','):
-        if '@' in model:
-            model_path, title = model.split('@')
-        else:
-            model_path, title = model, os.path.basename(os.path.normpath(model))
-        engine = engine_class(model_path)
-        engines.append(engine)
-        titles[engine] = title
-    return engines, titles
 

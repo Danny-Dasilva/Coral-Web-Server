@@ -15,7 +15,7 @@ import logging
 from edgetpu.classification.engine import ClassificationEngine
 
 import svg
-import utils
+import utils, input_image_size
 #from apps import run_app
 
 logger = logging.getLogger(__name__)
@@ -29,18 +29,12 @@ def render_gen(args):
 
     fps_counter = utils.avg_fps_counter(30)
 
-    # engines, titles = utils.make_engines(args.model, ClassificationEngine)
-    
-    
-    # engines = itertools.cycle(engines)
-    # engine = next(engines)
 
     
     draw_overlay = True
     
-    # print('engines1', engine)
-    engine = 'sick'
-    yield utils.input_image_size(engine)
+    
+    yield input_image_size()
     
     
     while True:
