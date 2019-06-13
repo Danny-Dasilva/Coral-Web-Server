@@ -66,7 +66,7 @@ def make_camera(source, inference_size, loop):
         return DeviceCamera(fmt, inference_size)
 
     filename = os.path.expanduser(source)
-    if os.path.isfile(filename):
-        return FileCamera(filename, inference_size, loop)
+    # if os.path.isfile(filename):
+    #     return FileCamera(filename, inference_size, loop)
 
     return None
