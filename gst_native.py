@@ -103,109 +103,109 @@ def _gst_buffer_map(buffer, flags):
         libgst.gst_buffer_unmap(ptr, mapping)
 
 # GStreamer Element that attaches VideoOverlayComposition to buffers passing by.
-class OverlayInjector(GstBase.BaseTransform):
-    __gstmetadata__ = ('<longname>', '<class>', '<description>', '<author>')
-    __gsttemplates__ = (Gst.PadTemplate.new('src',
-                                               Gst.PadDirection.SRC,
-                                               Gst.PadPresence.ALWAYS,
-                                               Gst.Caps.new_any()),
-                        Gst.PadTemplate.new('sink',
-                                               Gst.PadDirection.SINK,
-                                               Gst.PadPresence.ALWAYS,
-                                               Gst.Caps.new_any()))
+# class OverlayInjector(GstBase.BaseTransform):
+#     __gstmetadata__ = ('<longname>', '<class>', '<description>', '<author>')
+#     __gsttemplates__ = (Gst.PadTemplate.new('src',
+#                                                Gst.PadDirection.SRC,
+#                                                Gst.PadPresence.ALWAYS,
+#                                                Gst.Caps.new_any()),
+#                         Gst.PadTemplate.new('sink',
+#                                                Gst.PadDirection.SINK,
+#                                                Gst.PadPresence.ALWAYS,
+#                                                Gst.Caps.new_any()))
 
-    @staticmethod
-    def _plugin_init(plugin):
-        gtype = GObject.type_register(OverlayInjector)
-        Gst.Element.register(plugin, 'overlayinjector', 0, gtype)
-        return True
+#     @staticmethod
+#     def _plugin_init(plugin):
+#         gtype = GObject.type_register(OverlayInjector)
+#         Gst.Element.register(plugin, 'overlayinjector', 0, gtype)
+#         return True
 
-    @staticmethod
-    def plugin_register():
-        version = Gst.version()
-        Gst.Plugin.register_static(
-            version[0], version[1],         # GStreamer version
-            '',                             # name
-            '',                             # description
-            OverlayInjector._plugin_init,   # init_func
-            '',                             # version
-            'unknown',                      # license
-            '',                             # source
-            '',                             # package
-            ''                              # origin
-        )
+#     @staticmethod
+#     def plugin_register():
+#         version = Gst.version()
+#         Gst.Plugin.register_static(
+#             version[0], version[1],         # GStreamer version
+#             '',                             # name
+#             '',                             # description
+#             OverlayInjector._plugin_init,   # init_func
+#             '',                             # version
+#             'unknown',                      # license
+#             '',                             # source
+#             '',                             # package
+#             ''                              # origin
+#         )
 
-    def __init__(self):
-        GstBase.BaseTransform.__init__(self)
-        GstBase.BaseTransform.set_in_place(self, True)
-        self.render_size = None
-        self.svg = None
-        self.rendered_svg = None
-        self.composition = None
-        self.scale_factor = 0.75
+#     def __init__(self):
+#         GstBase.BaseTransform.__init__(self)
+#         GstBase.BaseTransform.set_in_place(self, True)
+#         self.render_size = None
+#         self.svg = None
+#         self.rendered_svg = None
+#         self.composition = None
+#         self.scale_factor = 0.75
 
-    def set_svg(self, svg, render_size):
-        self.svg = svg
-        self.render_size = render_size
+#     # def set_svg(self, svg, render_size):
+#     #     self.svg = svg
+#     #     self.render_size = render_size
 
-    def do_transform_ip(self, frame_buf):
-        self.render()
-        if self.composition:
-            # Note: Buffer IS writable (ref is 1 in native land). However gst-python
-            # took an additional ref so it's now 2 and gst_buffer_is_writable
-            # returns false. We can't modify the buffer without fiddling with refcount.
-            if frame_buf.mini_object.refcount != 2:
-                return Gst.FlowReturn.ERROR
-            frame_buf.mini_object.refcount -= 1
-            GstVideo.buffer_add_video_overlay_composition_meta(frame_buf, self.composition)
-            frame_buf.mini_object.refcount += 1
-        return Gst.FlowReturn.OK
+#     def do_transform_ip(self, frame_buf):
+#         self.render()
+#         if self.composition:
+#             # Note: Buffer IS writable (ref is 1 in native land). However gst-python
+#             # took an additional ref so it's now 2 and gst_buffer_is_writable
+#             # returns false. We can't modify the buffer without fiddling with refcount.
+#             if frame_buf.mini_object.refcount != 2:
+#                 return Gst.FlowReturn.ERROR
+#             frame_buf.mini_object.refcount -= 1
+#             GstVideo.buffer_add_video_overlay_composition_meta(frame_buf, self.composition)
+#             frame_buf.mini_object.refcount += 1
+#         return Gst.FlowReturn.OK
 
 
-    # def render(self):
-    #     if not self.svg:
-    #         self.composition = None
-    #         self.rendered_svg = None
-    #         return
+#     # def render(self):
+#     #     if not self.svg:
+#     #         self.composition = None
+#     #         self.rendered_svg = None
+#     #         return
 
-    #     if self.svg == self.rendered_svg:
-    #         return
+#     #     if self.svg == self.rendered_svg:
+#     #         return
 
-    #     overlay_size = self.render_size * self.scale_factor
-    #     stride = libcairo.cairo_format_stride_for_width(
-    #             int(cairo.FORMAT_ARGB32), overlay_size.width)
-    #     overlay_buffer = Gst.Buffer.new_allocate(None,
-    #             stride * overlay_size.height)
-    #     with _gst_buffer_map(overlay_buffer, Gst.MapFlags.WRITE) as mapped:
-    #         # Fill with transparency and create surface from buffer.
-    #         ctypes.memset(ctypes.addressof(mapped), 0, ctypes.sizeof(mapped))
-    #         surface = libcairo.cairo_image_surface_create_for_data(
-    #                 ctypes.addressof(mapped),
-    #                 int(cairo.FORMAT_ARGB32),
-    #                 overlay_size.width,
-    #                 overlay_size.height,
-    #                 stride)
+#     #     overlay_size = self.render_size * self.scale_factor
+#     #     stride = libcairo.cairo_format_stride_for_width(
+#     #             int(cairo.FORMAT_ARGB32), overlay_size.width)
+#     #     overlay_buffer = Gst.Buffer.new_allocate(None,
+#     #             stride * overlay_size.height)
+#     #     with _gst_buffer_map(overlay_buffer, Gst.MapFlags.WRITE) as mapped:
+#     #         # Fill with transparency and create surface from buffer.
+#     #         ctypes.memset(ctypes.addressof(mapped), 0, ctypes.sizeof(mapped))
+#     #         surface = libcairo.cairo_image_surface_create_for_data(
+#     #                 ctypes.addressof(mapped),
+#     #                 int(cairo.FORMAT_ARGB32),
+#     #                 overlay_size.width,
+#     #                 overlay_size.height,
+#     #                 stride)
 
-    #         # Render the SVG overlay.
-    #         data = self.svg.encode('utf-8')
-    #         context = libcairo.cairo_create(surface)
-    #         libcairo.cairo_scale(context, self.scale_factor, self.scale_factor)
-    #         handle = librsvg.rsvg_handle_new_from_data(data, len(data), 0)
-    #         librsvg.rsvg_handle_render_cairo(handle, context)
-    #         librsvg.rsvg_handle_close(handle, 0)
-    #         libgobject.g_object_unref(handle)
-    #         libcairo.cairo_surface_flush(surface)
-    #         libcairo.cairo_surface_destroy(surface)
-    #         libcairo.cairo_destroy(context)
+#     #         # Render the SVG overlay.
+#     #         data = self.svg.encode('utf-8')
+#     #         context = libcairo.cairo_create(surface)
+#     #         libcairo.cairo_scale(context, self.scale_factor, self.scale_factor)
+#     #         handle = librsvg.rsvg_handle_new_from_data(data, len(data), 0)
+#     #         librsvg.rsvg_handle_render_cairo(handle, context)
+#     #         librsvg.rsvg_handle_close(handle, 0)
+#     #         libgobject.g_object_unref(handle)
+#     #         libcairo.cairo_surface_flush(surface)
+#     #         libcairo.cairo_surface_destroy(surface)
+#     #         libcairo.cairo_destroy(context)
 
-    #         # Attach overlay to VideoOverlayComposition.
-    #         GstVideo.buffer_add_video_meta(overlay_buffer,
-    #                 GstVideo.VideoFrameFlags.NONE, GstVideo.VideoFormat.BGRA,
-    #                 overlay_size.width, overlay_size.height)
-    #         rect = GstVideo.VideoOverlayRectangle.new_raw(overlay_buffer,
-    #                 0, 0, self.render_size.width, self.render_size.height,
-    #                 GstVideo.VideoOverlayFormatFlags.PREMULTIPLIED_ALPHA)
-    #         self.composition = GstVideo.VideoOverlayComposition.new(rect)
-    #         self.rendered_svg = self.svg
+#     #         # Attach overlay to VideoOverlayComposition.
+#     #         GstVideo.buffer_add_video_meta(overlay_buffer,
+#     #                 GstVideo.VideoFrameFlags.NONE, GstVideo.VideoFormat.BGRA,
+#     #                 overlay_size.width, overlay_size.height)
+#     #         rect = GstVideo.VideoOverlayRectangle.new_raw(overlay_buffer,
+#     #                 0, 0, self.render_size.width, self.render_size.height,
+#     #                 GstVideo.VideoOverlayFormatFlags.PREMULTIPLIED_ALPHA)
+#     #         self.composition = GstVideo.VideoOverlayComposition.new(rect)
+#     #         self.rendered_svg = self.svg
 
 OverlayInjector.plugin_register()
