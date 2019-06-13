@@ -162,50 +162,50 @@ class OverlayInjector(GstBase.BaseTransform):
         return Gst.FlowReturn.OK
 
 
-    def render(self):
-        if not self.svg:
-            self.composition = None
-            self.rendered_svg = None
-            return
+    # def render(self):
+    #     if not self.svg:
+    #         self.composition = None
+    #         self.rendered_svg = None
+    #         return
 
-        if self.svg == self.rendered_svg:
-            return
+    #     if self.svg == self.rendered_svg:
+    #         return
 
-        overlay_size = self.render_size * self.scale_factor
-        stride = libcairo.cairo_format_stride_for_width(
-                int(cairo.FORMAT_ARGB32), overlay_size.width)
-        overlay_buffer = Gst.Buffer.new_allocate(None,
-                stride * overlay_size.height)
-        with _gst_buffer_map(overlay_buffer, Gst.MapFlags.WRITE) as mapped:
-            # Fill with transparency and create surface from buffer.
-            ctypes.memset(ctypes.addressof(mapped), 0, ctypes.sizeof(mapped))
-            surface = libcairo.cairo_image_surface_create_for_data(
-                    ctypes.addressof(mapped),
-                    int(cairo.FORMAT_ARGB32),
-                    overlay_size.width,
-                    overlay_size.height,
-                    stride)
+    #     overlay_size = self.render_size * self.scale_factor
+    #     stride = libcairo.cairo_format_stride_for_width(
+    #             int(cairo.FORMAT_ARGB32), overlay_size.width)
+    #     overlay_buffer = Gst.Buffer.new_allocate(None,
+    #             stride * overlay_size.height)
+    #     with _gst_buffer_map(overlay_buffer, Gst.MapFlags.WRITE) as mapped:
+    #         # Fill with transparency and create surface from buffer.
+    #         ctypes.memset(ctypes.addressof(mapped), 0, ctypes.sizeof(mapped))
+    #         surface = libcairo.cairo_image_surface_create_for_data(
+    #                 ctypes.addressof(mapped),
+    #                 int(cairo.FORMAT_ARGB32),
+    #                 overlay_size.width,
+    #                 overlay_size.height,
+    #                 stride)
 
-            # Render the SVG overlay.
-            data = self.svg.encode('utf-8')
-            context = libcairo.cairo_create(surface)
-            libcairo.cairo_scale(context, self.scale_factor, self.scale_factor)
-            handle = librsvg.rsvg_handle_new_from_data(data, len(data), 0)
-            librsvg.rsvg_handle_render_cairo(handle, context)
-            librsvg.rsvg_handle_close(handle, 0)
-            libgobject.g_object_unref(handle)
-            libcairo.cairo_surface_flush(surface)
-            libcairo.cairo_surface_destroy(surface)
-            libcairo.cairo_destroy(context)
+    #         # Render the SVG overlay.
+    #         data = self.svg.encode('utf-8')
+    #         context = libcairo.cairo_create(surface)
+    #         libcairo.cairo_scale(context, self.scale_factor, self.scale_factor)
+    #         handle = librsvg.rsvg_handle_new_from_data(data, len(data), 0)
+    #         librsvg.rsvg_handle_render_cairo(handle, context)
+    #         librsvg.rsvg_handle_close(handle, 0)
+    #         libgobject.g_object_unref(handle)
+    #         libcairo.cairo_surface_flush(surface)
+    #         libcairo.cairo_surface_destroy(surface)
+    #         libcairo.cairo_destroy(context)
 
-            # Attach overlay to VideoOverlayComposition.
-            GstVideo.buffer_add_video_meta(overlay_buffer,
-                    GstVideo.VideoFrameFlags.NONE, GstVideo.VideoFormat.BGRA,
-                    overlay_size.width, overlay_size.height)
-            rect = GstVideo.VideoOverlayRectangle.new_raw(overlay_buffer,
-                    0, 0, self.render_size.width, self.render_size.height,
-                    GstVideo.VideoOverlayFormatFlags.PREMULTIPLIED_ALPHA)
-            self.composition = GstVideo.VideoOverlayComposition.new(rect)
-            self.rendered_svg = self.svg
+    #         # Attach overlay to VideoOverlayComposition.
+    #         GstVideo.buffer_add_video_meta(overlay_buffer,
+    #                 GstVideo.VideoFrameFlags.NONE, GstVideo.VideoFormat.BGRA,
+    #                 overlay_size.width, overlay_size.height)
+    #         rect = GstVideo.VideoOverlayRectangle.new_raw(overlay_buffer,
+    #                 0, 0, self.render_size.width, self.render_size.height,
+    #                 GstVideo.VideoOverlayFormatFlags.PREMULTIPLIED_ALPHA)
+    #         self.composition = GstVideo.VideoOverlayComposition.new(rect)
+    #         self.rendered_svg = self.svg
 
 OverlayInjector.plugin_register()
