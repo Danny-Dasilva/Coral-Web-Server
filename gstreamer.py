@@ -35,7 +35,7 @@ from gi.repository import GstPbutils  # Must be called after Gst.init().
 
 from PIL import Image
 
-from gst_native import set_display_contexts
+#from gst_native import set_display_contexts
 from pipelines import *
 
 COMMAND_SAVE_FRAME = ' '
@@ -345,7 +345,7 @@ def run_pipeline(pipeline, layout, loop, display, handle_sigint=True, signals=No
         drawing_area.realize()
 
         glsink = pipeline.get_by_name('glsink')
-        set_display_contexts(glsink, drawing_area)
+        #set_display_contexts(glsink, drawing_area)
         drawing_area.connect('draw', on_widget_draw)
         drawing_area.connect('configure-event', on_widget_configure, glsink)
         window.connect('delete-event', Gtk.main_quit)
