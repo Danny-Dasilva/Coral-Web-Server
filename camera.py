@@ -42,15 +42,6 @@ class Camera:
     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
         raise NotImplemented
 
-# class FileCamera(Camera):
-#     def __init__(self, filename, inference_size, loop):
-#         info = gstreamer.get_video_info(filename)
-#         super().__init__((info.get_width(), info.get_height()), inference_size,
-#                           loop=loop)
-#         self._filename = filename
-
-#     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
-#         return pipelines.video_streaming_pipeline(self._filename, self._layout)
 
 class DeviceCamera(Camera):
     def __init__(self, fmt, inference_size):
@@ -64,9 +55,4 @@ def make_camera(source, inference_size, loop):
     fmt = parse_format(source)
     if fmt:
         return DeviceCamera(fmt, inference_size)
-
-    #filename = os.path.expanduser(source)
-    # if os.path.isfile(filename):
-    #     return FileCamera(filename, inference_size, loop)
-
     return None
